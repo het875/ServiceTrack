@@ -2,6 +2,22 @@ from django.db import models
 from django.core import validators
 from django.core.validators import RegexValidator
 
+
+class By(models.Model):
+    created =[
+        ("ORG" , "organations"),
+        ("AD" , "admins"),
+        ("EMP" , "employees"),
+        ("CUST", "customers"),
+    ]
+class BaseModel(models.Model):
+    created = models.DateTimeField(auto_now_add=True,editable=False)
+    created_by = models.CharField(max_length=10,choices=created)
+    updated = models.DateTimeField(auto_now=True,editable=True)
+    updated_by = models.CharField(max_length=10,choices=created_by)
+    deleted = models.DateTimeField(null=True, blank=True,default=False)
+    is_blocked = models.BooleanField(default=False)
+
     #Define the validaters
 pan_card_validator = RegexValidator(
     regex=r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$',
@@ -13,7 +29,7 @@ gst_number_validator = RegexValidator(
     message='GST number must be 15 characters long and in the format: "22AAAAA0000A1Z5".'
 )
 
-class Organization(models.Model):
+class Organization(BaseModel):
     org_id = models.AutoField(primary_key=True)
     org_name = models.CharField(max_length=180,unique=True)
     org_address =models.models.TextField()
@@ -37,10 +53,6 @@ class Organization(models.Model):
         validators=[pan_card_validator]
     )
     services_provided = models.TextField(max_length=250)
-    created = models.DateTimeField(auto_now_add=True,editable=False)
-    updated = models.DateTimeField(auto_now=True,editable=True)
-    deleted = models.DateTimeField(null=True, blank=True,default=False)   
-    is_blocked = models.BooleanField(default=False)
     block_expiration = models.DateTimeField(null=True, blank=True)
     is_mobile_verification = models.BooleanField(default=False)
     is_verified_by_admin = models.BooleanField(default=False)
@@ -53,5 +65,3 @@ class Organization(models.Model):
 
     def __str__(self):
         return self.org_name
-
-#het
