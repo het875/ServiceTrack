@@ -4,7 +4,7 @@ from django.core.validators import RegexValidator
 
 
 class By(models.Model):
-    created_by =[
+    created =[
         ("ORG" , "organations"),
         ("AD" , "admins"),
         ("EMP" , "employees"),
@@ -12,7 +12,7 @@ class By(models.Model):
     ]
 class BaseModel(models.Model):
     created = models.DateTimeField(auto_now_add=True,editable=False)
-    created_by = models.CharField(max_length=10,choices=created_by)
+    created_by = models.CharField(max_length=10,choices=created)
     updated = models.DateTimeField(auto_now=True,editable=True)
     updated_by = models.CharField(max_length=10,choices=created_by)
     deleted = models.DateTimeField(null=True, blank=True,default=False)
